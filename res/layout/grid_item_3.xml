@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="4"
+    android:layout_margin="10dip" >
+        <TextView android:id="@+id/setting_server_name"
+		     android:layout_height="wrap_content"
+		     android:layout_width="0dip"
+		     android:layout_weight="3"
+		     android:layout_gravity="center"
+		     android:padding="10dip"
+		     android:textColor="#000" />
+        <TextView android:id="@+id/setting_server_url"
+                android:layout_width="0dip"
+                android:layout_height="0dip"
+                android:padding="0dip" />
+        <ImageView android:id="@+id/remove_server"
+            android:layout_height="wrap_content"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:padding="10dip"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:onClick="removeRow" />
+</LinearLayout>
