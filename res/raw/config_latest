@@ -1,0 +1,27 @@
+{
+    "Offical Jenkins All" : {
+        "title": "jenkins-all",
+        "url" : "http://ci.jenkins-ci.org/rssAll",
+        "visible":true
+    },
+    "Offical Jenkins Unstable" : {
+        "title": "jenkins-unstable",
+        "url" : "http://ci.jenkins-ci.org/view/All%20Unstable/rssAll",
+        "visible":true
+    },
+    "Offical Jenkins Site" : {
+        "title": "jenkins-site",
+        "url" : "http://ci.jenkins-ci.org/view/All%20Site/rssAll",
+        "visible":true
+    },
+    "Offical Jenkins Core" : {
+        "title": "jenkins-core",
+        "url" : "http://ci.jenkins-ci.org/view/Jenkins%20core/rssAll",
+        "visible":true
+    },
+    "Offical Jenkins Library" : {
+        "title": "jenkins-library",
+        "url" : "http://ci.jenkins-ci.org/view/Libraries/rssAll",
+        "visible":true
+    }
+}

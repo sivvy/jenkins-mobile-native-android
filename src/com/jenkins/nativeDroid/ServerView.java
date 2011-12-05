@@ -17,7 +17,8 @@ public class ServerView {
 			try {
 			    String element = server_list.next().toString(); 
 			    JSONObject current = object.getJSONObject(element);
-			    String title = current.getString("title"),
+//			    String title = current.getString("title"),
+			    String title = element,
 			    		url = current.getString("url");
 			    boolean flag = current.getBoolean("visible"),
 			    		error = true;

@@ -54,7 +54,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 	    ImageView backButton = (ImageView) findViewById(R.id.done);
 	    ImageView addButton = (ImageView) findViewById(R.id.add);
 	    
-	    InputStream is = this.getResources().openRawResource(R.raw.config);
+	    InputStream is = this.getResources().openRawResource(R.raw.config_latest);
 		Config = conf.initialize(is);
 	    
 	    drawServers();
@@ -62,6 +62,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 			public void onClick(View v) {
 				if ( dynamicTable.getTag().toString() != "servers" ) {
 					Toast.makeText(getApplicationContext(), "GOING HOME", Toast.LENGTH_SHORT).show();
+					dynamicTable.setAdapter(null);
 					drawServers();
 				}
 			}
@@ -71,6 +72,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 			public void onClick(View v) {
 				if ( dynamicTable.getTag().toString() == "servers" ) {
 					Toast.makeText(getApplicationContext(), "Server refresh", Toast.LENGTH_SHORT).show();
+					dynamicTable.setAdapter(null);
 					drawServers();
 				} else {
 					Toast.makeText(getApplicationContext(), dynamicTable.getTag().toString(), Toast.LENGTH_SHORT).show();
@@ -92,6 +94,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 				rowDefault.setVisibility(View.VISIBLE);
 				rowSettings.setVisibility(View.GONE);
 				Toast.makeText(getApplicationContext(), "HOME from SETTING", Toast.LENGTH_SHORT).show();
+				dynamicTable.setAdapter(null);
 				drawServers();
 			}
 		});
@@ -208,7 +211,8 @@ public class JenkinsNativeDroidActivity extends Activity {
         	try {
         		String element = server_names.next().toString();
         		JSONObject current = Config.getJSONObject(element);
-        		String title = current.getString("title"),
+//        		String title = current.getString("title"),
+        		String title = element,
         				url = current.getString("url");
         		boolean flag = current.getBoolean("visible");
     			HashMap<String, Object> map = new HashMap<String, Object>();
