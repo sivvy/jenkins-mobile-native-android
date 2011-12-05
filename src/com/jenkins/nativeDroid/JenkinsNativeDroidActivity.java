@@ -110,7 +110,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 	    				Config = conf.add(Config, name.getText().toString(), url.getText().toString());
 	    				addDialog.dismiss();
 	    				conf.save(Config);
-	    				addRow(url.getText().toString(), name.getText().toString());
+	    				addRow(url.getText().toString(), name.getText().toString(), "add", null, null);
 	    			}
 	    		});
 	    	}
@@ -166,7 +166,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 		    				Config = conf.edit(Config, nameBox.getText().toString(), urlBox.getText().toString(), name.getText().toString(), url.getText().toString());
 		    				editDialog.dismiss();
 		    				conf.save(Config);
-		    				addRow(urlBox.getText().toString(), nameBox.getText().toString());
+		    				addRow(urlBox.getText().toString(), nameBox.getText().toString(), "edit", url.getText().toString(), name.getText().toString());
 		    			}
 		    		});
     				conf.save(Config);
@@ -211,7 +211,6 @@ public class JenkinsNativeDroidActivity extends Activity {
         	try {
         		String element = server_names.next().toString();
         		JSONObject current = Config.getJSONObject(element);
-//        		String title = current.getString("title"),
         		String title = element,
         				url = current.getString("url");
         		boolean flag = current.getBoolean("visible");
@@ -231,28 +230,41 @@ public class JenkinsNativeDroidActivity extends Activity {
         
 	}
 	
-	public void addRow (String url, String name) {
-			boolean containsflag = false;
+	public void addRow (String url, String name, String type, String old_url, String old_name) {
+		if (type == "edit"){
+			boolean visibility = false;
+			boolean contains = false;
+			HashMap<String, Object> old = null;
 			for (Iterator<HashMap<String, Object>> i = settingMaps.iterator(); i.hasNext();) {
 				HashMap<String, Object> current = (HashMap<String, Object>) i.next();
-					if (current.containsValue(name)) {
-						containsflag = true;
-						//check if url diff
-						if (!current.containsValue(url)) {
-							//change url
-							current.put("setting_server_url", url);
-						}
-					}
+				if (current.containsValue(name)) {
+					contains = true;
+					visibility = (Boolean) current.get("visible");
+					settingMaps.remove(current);
+				} else if (current.containsValue(old_name)) {
+					old = current;
+				}
 			}
-			if (!containsflag) {
-				//make new map
-				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("visible", true);
-				map.put("setting_server_name", name); //server_name
-				map.put("setting_server_url", url); //server_url
-				map.put("remove_server", R.drawable.icon_delete);
-				settingMaps.add(map);
+			if (contains ==  false) {
+				if (old != null) {
+					settingMaps.remove(old);
+				}
 			}
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("visible", visibility);
+			map.put("setting_server_name", name); //server_name
+			map.put("setting_server_url", url); //server_url
+			map.put("remove_server", R.drawable.icon_delete);
+			settingMaps.add(map);
+			
+		}else {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("visible", true);
+			map.put("setting_server_name", name); //server_name
+			map.put("setting_server_url", url); //server_url
+			map.put("remove_server", R.drawable.icon_delete);
+			settingMaps.add(map);
+		}
 		settingsAdapter.notifyDataSetChanged();
 	}
 	
