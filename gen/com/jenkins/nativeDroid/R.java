@@ -30,10 +30,10 @@ public final class R {
         public static final int title_bar_gradient=0x7f020010;
     }
     public static final class id {
-        public static final int Button01=0x7f070019;
-        public static final int Button02=0x7f07001a;
-        public static final int TextView01=0x7f070015;
-        public static final int TextView02=0x7f070017;
+        public static final int Button01=0x7f070018;
+        public static final int Button02=0x7f070019;
+        public static final int TextView01=0x7f070014;
+        public static final int TextView02=0x7f070016;
         public static final int add=0x7f070011;
         public static final int app_title=0x7f07000c;
         public static final int details_datetime=0x7f070003;
@@ -41,14 +41,13 @@ public final class R {
         public static final int details_name=0x7f070001;
         public static final int details_number=0x7f070002;
         public static final int done=0x7f070010;
-        public static final int edittext01=0x7f070016;
-        public static final int edittext02=0x7f070018;
+        public static final int edittext01=0x7f070015;
+        public static final int edittext02=0x7f070017;
         public static final int home=0x7f07000b;
         public static final int icon_row_default=0x7f07000a;
         public static final int icon_row_settings=0x7f07000f;
-        public static final int layout=0x7f070013;
-        public static final int listview=0x7f070014;
-        public static final int phonegap_container=0x7f070012;
+        public static final int layout=0x7f070012;
+        public static final int listview=0x7f070013;
         public static final int refresh=0x7f07000d;
         public static final int remove_server=0x7f070009;
         public static final int server_image=0x7f070004;

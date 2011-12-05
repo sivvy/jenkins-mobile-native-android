@@ -6,40 +6,27 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jenkins.*;
-import com.phonegap.*;
 
 public class JenkinsNativeDroidActivity extends Activity {
 	/** Called when the activity is first created. */
-	WebView myWebView;
 	TextView title;
 	LinearLayout rowDefault, rowSettings;
 	String[] details;
@@ -52,9 +39,6 @@ public class JenkinsNativeDroidActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		myWebView = (WebView) findViewById(R.id.phonegap_container);
-		myWebView.setWebChromeClient(new WebChromeClient()); 
-	    myWebView.setWebViewClient(new WebViewClient()); 
 	    
 	    title = (TextView) findViewById(R.id.app_title);
 	    rowDefault = (LinearLayout) findViewById(R.id.icon_row_default);
