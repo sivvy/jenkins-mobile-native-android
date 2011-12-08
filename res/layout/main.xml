@@ -16,7 +16,7 @@
             android:layout_width="0px"
             android:layout_height="80px"
             android:paddingTop="5px"
-            android:src="@drawable/icon_home_active"
+            android:src="@drawable/icon_home"
             android:clickable="true"
         android:layout_weight="1" />
     <TextView
@@ -47,7 +47,7 @@
             android:layout_width="0px"
             android:layout_height="80px"
             android:paddingTop="5px"
-            android:src="@drawable/icon_settings_active"
+            android:src="@drawable/icon_settings"
             android:clickable="true"
         android:layout_weight="1" />
 </LinearLayout>
@@ -63,7 +63,7 @@
             android:layout_width="0px"
             android:layout_height="80px"
             android:paddingTop="5px"
-            android:src="@drawable/icon_home_active"
+            android:src="@drawable/icon_home"
             android:clickable="true"
         android:layout_weight="1" />
     <TextView

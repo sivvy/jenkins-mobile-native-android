@@ -23,7 +23,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jenkins.*;
 
 public class JenkinsNativeDroidActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -34,6 +33,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 	JSONObject Config;
 	List<HashMap<String, Object>> settingMaps;
 	SettingsAdapter settingsAdapter;
+	ServerView serverList;
 	Config conf = new Config();
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,20 +56,24 @@ public class JenkinsNativeDroidActivity extends Activity {
 	    
 	    InputStream is = this.getResources().openRawResource(R.raw.config_latest);
 		Config = conf.initialize(is);
-	    
+		
 	    drawServers();
+	    System.out.println("initialize dynamicTable");
 	    home.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				System.out.println("Emtpy dynamicTable");
 				if ( dynamicTable.getTag().toString() != "servers" ) {
-					Toast.makeText(getApplicationContext(), "GOING HOME", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), "HOME", Toast.LENGTH_SHORT).show();
 					dynamicTable.setAdapter(null);
 					drawServers();
+					System.out.println("Rendered dynamicTable");
 				}
 			}
 		});
 	    
 	    refresh.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				System.out.println("Refresh");
 				if ( dynamicTable.getTag().toString() == "servers" ) {
 					Toast.makeText(getApplicationContext(), "Server refresh", Toast.LENGTH_SHORT).show();
 					dynamicTable.setAdapter(null);
@@ -83,6 +87,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 	    
 	    settings.setOnClickListener(new View.OnClickListener() {
     	   public void onClick(View v) {
+    		   serverList.cancel(true);
      		   rowDefault.setVisibility(View.GONE);
      		   rowSettings.setVisibility(View.VISIBLE);
      		  drawSettings();
@@ -91,9 +96,10 @@ public class JenkinsNativeDroidActivity extends Activity {
 	    
 	    backButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				System.out.println("Emtpy dynamicTable");
 				rowDefault.setVisibility(View.VISIBLE);
 				rowSettings.setVisibility(View.GONE);
-				Toast.makeText(getApplicationContext(), "HOME from SETTING", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "HOME", Toast.LENGTH_SHORT).show();
 				dynamicTable.setAdapter(null);
 				drawServers();
 			}
@@ -119,6 +125,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 	    dynamicTable.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view,
         	        int position, long id) {
+        		serverList.cancel(true);
         		if ( parent.getTag().toString() == "servers" ) {
 	        		TextView link = (TextView)view.findViewById(R.id.server_url);
 	        		@SuppressWarnings("unchecked")
@@ -152,6 +159,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 	    dynamicTable.setOnItemLongClickListener(new OnItemLongClickListener() {
 	    	public boolean onItemLongClick(AdapterView<?> parent, View view,
         	        int position, long id) {
+	    		
 	    		if ( parent.getTag().toString() == "settings" ) {
 	    			final TextView name = (TextView)view.findViewById(R.id.setting_server_name);
 	    			final TextView url = (TextView)view.findViewById(R.id.setting_server_url);
@@ -179,14 +187,11 @@ public class JenkinsNativeDroidActivity extends Activity {
 	
 	public void drawServers() {
 		try {
-			Iterator server_list = Config.keys();
-		    String[] from = new String[] { "server_image","server_name", "server_url"};
-	        int[] to = new int[] { R.id.server_image, R.id.server_name, R.id.server_url };
-	        ServerView list = new ServerView();
-		    List<HashMap<String, Object>> fillMaps = list.showServers(server_list, Config);
-			SimpleAdapter adapter = new SimpleAdapter(this, fillMaps, R.layout.grid_item_2, from, to);
-	        dynamicTable.setAdapter(adapter);
-	        dynamicTable.setTag("servers");
+			if (serverList != null) {
+				serverList.cancel(true);
+			}
+			serverList = new ServerView( this, dynamicTable, Config );
+			serverList.execute();
 		} catch (Exception e) {
 			System.out.println("Error in drawServers: " + e);
 		}

@@ -13,6 +13,7 @@ public class DetailView {
 		// prepare the list of all records
 		List<HashMap<String, Object>> fillMaps = new ArrayList<HashMap<String, Object>>();
 		int ctr = 0;
+		for(int m=0; m < 5; m++)
 		for(int i = 0; i < details.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			String[] current = details[i].split("#t#");

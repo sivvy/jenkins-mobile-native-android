@@ -7,19 +7,47 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-public class ServerView {
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Interpolator.Result;
+import android.os.AsyncTask;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
-	public List<HashMap<String, Object>> showServers(Iterator server_list, JSONObject object) {
+public class ServerView extends AsyncTask<String, Integer, Long> {
+	ListView dynamicTable;
+	Context context;
+	JSONObject config;
+	List<HashMap<String, Object>> fillMaps;
+	final static String[] from = new String[] { "server_image","server_name", "server_url"};
+	final static int[] to = new int[] { R.id.server_image, R.id.server_name, R.id.server_url };
+	ProgressDialog loadingBox;
+	
+	public ServerView(Context c, ListView table, JSONObject conf) {
+		super();
+		dynamicTable = table;
+		context = c;
+		config = conf;
+		loadingBox = new ProgressDialog(c);
+		loadingBox.setMessage("Loading...");
+	}
+	
+	public boolean showServers() {
+		Iterator server_list = config.keys();
 		RSSReader reader_server = RSSReader.getInstance();
 		String string_server;
-		List<HashMap<String, Object>> fillMaps = new ArrayList<HashMap<String, Object>>();
+        
+		fillMaps = new ArrayList<HashMap<String, Object>>();
+		dynamicTable.setTag("servers");
 		while(server_list.hasNext()) {
 			try {
-			    String element = server_list.next().toString(); 
-			    JSONObject current = object.getJSONObject(element);
-//			    String title = current.getString("title"),
-			    String title = element,
-			    		url = current.getString("url");
+				if (isCancelled()) {
+					return false;
+				}
+			    String title = server_list.next().toString(); 
+			    JSONObject current = config.getJSONObject(title);
+			    String url = current.getString("url");
+			    
 			    boolean flag = current.getBoolean("visible"),
 			    		error = true;
 		    
@@ -46,11 +74,44 @@ public class ServerView {
 			    	map.put("server_url", url); //server_url
 			    	map.put("server_image", icon_server);
 			    	fillMaps.add(map);
+			    	publishProgress(0);
 			    }
 			} catch(Exception e) {
-				
+				System.out.println("Error in showServers: " + e);
 			}
 		}
-		return fillMaps;
+		return false;
+	}
+	
+	void updateUI() {
+		if (isCancelled()) {
+			loadingBox.dismiss();
+			return;
+		}
+		SimpleAdapter adapter = new SimpleAdapter(context, fillMaps, R.layout.grid_item_2, from, to);
+    	dynamicTable.setAdapter(adapter);
+	}
+	
+	protected void onCancelled(Result result) {
+		dynamicTable.setAdapter(null);
+		loadingBox.dismiss();
+	}
+	
+	protected void onProgressUpdate(Integer... valus) {
+		this.updateUI();
+    }
+	
+	protected void onPostExecute(Long result) {
+		loadingBox.dismiss();
+	}
+	
+	protected void onPreExecute() {
+		loadingBox.show();
+	}
+	
+	@Override
+	protected Long doInBackground(String... params) {
+		this.showServers();
+		return null;
 	}
 }
