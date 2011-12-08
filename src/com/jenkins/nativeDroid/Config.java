@@ -53,19 +53,23 @@ public class Config {
 	}
 	
 	public JSONObject edit (JSONObject obj, String input_server, String input_url, String view_server, String view_url) {
+		boolean editable = false;
 		if (input_server.equals(view_server)) {
 			if(!input_url.equals(view_url)) {
-				try {
-					String visible = obj.getJSONObject(view_server).getString("visible");
-					obj.remove(view_server);
-					obj.put(input_server, new JSONObject("{\"title\": \""+ input_server +"\",\"url\": \""+ input_url +"\",\"visible\": "+ visible +"}"));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				editable = true;
 			}
 		} else {
-			obj.remove(view_server);
-			add(obj, input_server, input_url);
+			editable = true;
+		}
+		
+		if(editable == true) {
+			try {
+				String visible = obj.getJSONObject(view_server).getString("visible");
+				obj.remove(view_server);
+				obj.put(input_server, new JSONObject("{\"title\": \""+ input_server +"\",\"url\": \""+ input_url +"\",\"visible\": "+ visible +"}"));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return obj;
 	}

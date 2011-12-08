@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -116,7 +117,7 @@ public class JenkinsNativeDroidActivity extends Activity {
 	    				Config = conf.add(Config, name.getText().toString(), url.getText().toString());
 	    				addDialog.dismiss();
 	    				conf.save(Config);
-	    				addRow(url.getText().toString(), name.getText().toString());
+	    				addRow(url.getText().toString(), name.getText().toString(), "add", null, null);
 	    			}
 	    		});
 	    	}
@@ -157,27 +158,28 @@ public class JenkinsNativeDroidActivity extends Activity {
         });
 	    
 	    dynamicTable.setOnItemLongClickListener(new OnItemLongClickListener() {
-	    	public boolean onItemLongClick(AdapterView<?> parent, View view,
+	    	public boolean onItemLongClick(AdapterView<?> parent, View view1,
         	        int position, long id) {
 	    		
 	    		if ( parent.getTag().toString() == "settings" ) {
-	    			final TextView name = (TextView)view.findViewById(R.id.setting_server_name);
-	    			final TextView url = (TextView)view.findViewById(R.id.setting_server_url);
+	    			TextView selected_name = (TextView)view1.findViewById(R.id.setting_server_name),
+	    					selected_url = (TextView)view1.findViewById(R.id.setting_server_url);
 	    			final CustomDialog editDialog = new CustomDialog(JenkinsNativeDroidActivity.this, "Edit");
-	    			final EditText nameBox = (EditText) editDialog.findViewById(R.id.edittext01);
-    				final EditText urlBox = (EditText) editDialog.findViewById(R.id.edittext02);
-	    			nameBox.setText(name.getText().toString(), TextView.BufferType.EDITABLE);
-	    			urlBox.setText(url.getText().toString(), TextView.BufferType.EDITABLE);
+	    			final EditText nameBox = (EditText) editDialog.findViewById(R.id.edittext01),
+	    					urlBox = (EditText) editDialog.findViewById(R.id.edittext02);
+    				final String nama_lama = selected_name.getText().toString(),
+    						url_lama = selected_url.getText().toString();
+	    			nameBox.setText(nama_lama, TextView.BufferType.EDITABLE);
+	    			urlBox.setText(url_lama, TextView.BufferType.EDITABLE);
 	    			Button okbutton = (Button) editDialog.findViewById(R.id.Button01);
-		    		okbutton.setOnClickListener(new View.OnClickListener() {
+		    		okbutton.setOnClickListener(new OnClickListener() {
 		    			public void onClick(View v) {
-		    				Config = conf.edit(Config, nameBox.getText().toString(), urlBox.getText().toString(), name.getText().toString(), url.getText().toString());
+		    				Config = conf.edit(Config, nameBox.getText().toString(), urlBox.getText().toString(), nama_lama, url_lama);
 		    				editDialog.dismiss();
 		    				conf.save(Config);
-		    				addRow(urlBox.getText().toString(), nameBox.getText().toString());
+		    				addRow(urlBox.getText().toString(), nameBox.getText().toString(), "edit", url_lama, nama_lama);
 		    			}
 		    		});
-    				conf.save(Config);
 	    		}
 				return false;
 	    	}
@@ -216,7 +218,6 @@ public class JenkinsNativeDroidActivity extends Activity {
         	try {
         		String element = server_names.next().toString();
         		JSONObject current = Config.getJSONObject(element);
-//        		String title = current.getString("title"),
         		String title = element,
         				url = current.getString("url");
         		boolean flag = current.getBoolean("visible");
@@ -236,28 +237,44 @@ public class JenkinsNativeDroidActivity extends Activity {
         
 	}
 	
-	public void addRow (String url, String name) {
-			boolean containsflag = false;
+	public void addRow (String url, String name, String type, String old_url, String old_name) {
+		if (type == "edit"){
+			boolean visibility = false;
+			boolean contains = false;
+			HashMap<String, Object> old = null;
 			for (Iterator<HashMap<String, Object>> i = settingMaps.iterator(); i.hasNext();) {
 				HashMap<String, Object> current = (HashMap<String, Object>) i.next();
-					if (current.containsValue(name)) {
-						containsflag = true;
-						//check if url diff
-						if (!current.containsValue(url)) {
-							//change url
-							current.put("setting_server_url", url);
-						}
+				
+				if (current.containsValue(name)) {
+					contains = true;
+					if (!current.containsValue(url)) {
+						current.remove("setting_server_url");
+						current.put("setting_server_url", url);
 					}
+				} else if (current.containsValue(old_name)) {
+					visibility = (Boolean) current.get("visible");
+					old = current;
+				}
 			}
-			if (!containsflag) {
-				//make new map
-				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("visible", true);
-				map.put("setting_server_name", name); //server_name
-				map.put("setting_server_url", url); //server_url
-				map.put("remove_server", R.drawable.icon_delete);
-				settingMaps.add(map);
+			if (contains ==  false) {
+				if (old != null) {
+					settingMaps.remove(old);
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("visible", visibility);
+					map.put("setting_server_name", name); //server_name
+					map.put("setting_server_url", url); //server_url
+					map.put("remove_server", R.drawable.icon_delete);
+					settingMaps.add(map);
+				}
 			}
+		}else {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("visible", true);
+			map.put("setting_server_name", name); //server_name
+			map.put("setting_server_url", url); //server_url
+			map.put("remove_server", R.drawable.icon_delete);
+			settingMaps.add(map);
+		}
 		settingsAdapter.notifyDataSetChanged();
 	}
 	
@@ -277,4 +294,3 @@ public class JenkinsNativeDroidActivity extends Activity {
 		conf.save(Config);
 	}
 }
-
